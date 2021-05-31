@@ -1,13 +1,22 @@
 <template>
   <div id="app">
-    App
-    <!--
-      first serve api.json in data 
-      http://localhost:5000/api.json
-    -->
+    <AppHeader />
+    <router-view />
+    <AppFooter />
   </div>
 </template>
+<script>
+import AppHeader from "@/components/AppHeader";
+import AppFooter from "@/components/AppFooter";
 
+export default {
+  name: "App",
+  components: {
+    AppHeader,
+    AppFooter,
+  },
+};
+</script>
 <style>
 @font-face {
   font-family: "Poppins";

@@ -1,5 +1,9 @@
 <template>
-  <div class="about">About</div>
+  <div class="about">
+    <div class="p-5 m-5 text-dark h1  text-center">
+      About us
+    </div>
+  </div>
 </template>
 
 <script>
@@ -8,5 +12,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>
