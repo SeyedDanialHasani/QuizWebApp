@@ -4,64 +4,49 @@
       <template #header>Quiz</template>
       <div>
         <br />
-        <span
-          >corrects:{{ status.corrects }}
-          <br />
-          incorrects:{{ status.incorrects }}
-          <br />
-        </span>
       </div>
       <template #lead>
-        <p>{{ index + 1 }}.<span v-html="question.question"></span></p>
+        <p>
+          {{ index + 1 }}.
+          <span v-html="question.questionText"></span>
+        </p>
       </template>
       <hr class="my-4" />
       <b-list-group>
-        <div v-for="(answer, i) in answers" :key="i">
+        <div v-for="(answer, i) in question.answers" :key="i">
           <b-list-group-item
             button
-            @click="checkAnswer(i)"
-            :disabled="submited"
-            :class="[
-              i !== tindex && submited
-                ? 'bg-danger'
-                : i === tindex && submited
-                ? 'bg-success'
-                : cindex === i
-                ? 'bg-primary'
-                : '',
-            ]"
             class="text-dark"
+            @click="how(i)"
+            :variant="i === g ? 'primary' : ''"
           >
             {{ i + 1 }}.{{ answer }}
           </b-list-group-item>
         </div>
       </b-list-group>
-      <div class="text-center py-5">
-        <b-button-group>
+
+      <div class="text-center">
+        <b-button-group class="w-100">
           <b-button
             variant="warning"
             class="text-dark"
-            @click="before"
-            :disabled="index === 0 || !selected || !submited"
+            @click="beforeQuestion()"
+            :disabled="index <= 0"
             >before</b-button
           >
+
           <b-button
             variant="primary"
             class="text-dark"
-            @click="next"
-            :disabled="index >= 4 || !selected || !submited"
+            @click="nextQuestion()"
+            :disabled="index + 1 >= count"
             >next</b-button
-          >
-          <b-button
-            variant="success"
-            class="text-dark"
-            @click="submitAnswer"
-            :disabled="!selected || submited"
-            >Submit</b-button
           >
         </b-button-group>
       </div>
-
+      <div>
+        <b-button block variant="dark">Finish quiz</b-button>
+      </div>
       <b-list-group>
         <b-list-group-item>
           <p>Type:{{ question.type }}</p>
@@ -79,70 +64,30 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import _ from "lodash";
 export default {
   name: "Quiz",
   data() {
-    return {
-      index: 0,
-      tindex: null,
-      cindex: null,
-      selected: null,
-      submited: null,
-      variant: {
-        success: null,
-        danger: null,
-      },
-      status: {
-        corrects: 0,
-        incorrects: 0,
-      },
-    };
+    return { g: null };
   },
   methods: {
-    ...mapActions(["getQuestions"]),
-    before() {
-      this.index--;
-      this.getQuestions(this.index);
-    },
-    next() {
-      this.index++;
-      this.getQuestions(this.index);
-      this.submited = null;
-      this.selected = null;
-      this.cindex = null;
-    },
-    checkAnswer(i) {
-      this.cindex = i;
-      this.selected = true;
-      console.log(i, "checkAnswer");
-    },
-    submitAnswer() {
-      this.submited = true;
-      if (this.cindex === this.tindex) {
-        this.status.corrects++;
-        console.log(true);
-      } else {
-        this.status.incorrects++;
-        console.log(false);
-      }
-      console.log("submitAnswer");
+    ...mapActions(["getQuestions", "beforeQuestion", "nextQuestion", "check"]),
+    how(i) {
+      // check(i)
+      this.$store.dispatch("check", {
+        question: this.index + 1,
+        selectedIndex: i,
+      });
+      this.g = i;
     },
   },
   computed: {
     ...mapGetters(["question"]),
-    answers() {
-      let allAnswers = [...this.question.incorrect_answers];
-      allAnswers.push(this.question.correct_answer);
-      const answers = _.shuffle(allAnswers);
-      console.log(answers, "del");
-      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-      this.tindex = answers.indexOf(this.question.correct_answer);
-      return answers;
+    index() {
+      return this.$store.state.quiz.index;
     },
-  },
-  created() {
-    this.getQuestions(this.index);
+    count() {
+      return this.$store.state.quiz.count;
+    },
   },
 };
 </script>
