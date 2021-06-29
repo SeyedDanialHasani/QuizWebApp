@@ -2,9 +2,9 @@
   <div>
     <b-container class="bv-example-row">
       <b-row>
-        <b-col v-if="!start"><Start /></b-col>
-        <b-col v-if="start"><Quiz /></b-col>
-        <b-col v-if="false"><Result /></b-col>
+        <b-col v-if="!start && !finish"><Start /></b-col>
+        <b-col v-if="start && !finish"><Quiz /></b-col>
+        <b-col v-if="finish"><Result /></b-col>
       </b-row>
     </b-container>
   </div>
@@ -21,6 +21,9 @@ export default {
   computed: {
     start() {
       return this.$store.state.quiz.start;
+    },
+    finish() {
+      return this.$store.state.quiz.finish;
     },
   },
 };

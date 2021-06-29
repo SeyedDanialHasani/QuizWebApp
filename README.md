@@ -2,7 +2,11 @@
 
 ---
 
-This project use [opentdb](https://http://opentdb.com/) api .
+## This project bulid by seyed danial hasani.
+
+### This project use [opentdb](https://http://opentdb.com/) api .
+
+---
 
 ## Project setup
 

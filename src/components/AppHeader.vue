@@ -1,7 +1,7 @@
 <template>
   <div class="header">
     <div>
-      <b-navbar toggleable="lg" type="dark" variant="primary">
+      <b-navbar toggleable="lg" type="dark" variant="primary" class="shadow">
         <b-navbar-brand
           ><router-link class="text-decoration-none text-dark" to="/"
             >Quiz</router-link

@@ -11,22 +11,20 @@ const state = {
     type: null,
     difficulty: null,
   },
-  status: {
-    currentIndex: null,
-    unAnswered: null,
-    Answered: null,
-  },
+  status: {},
   result: {
-    correctAnswers: null,
-    incorroctAnswers: null,
-    noAnswers: null,
-    score: null,
+    correctAnswers: 0,
+    incorroctAnswers: 0,
+    noAnswers: 0,
+    score: 0,
   },
-  record: [],
+  records: [],
+  recordsLight: [],
   index: 0,
   start: false,
   finish: null,
   count: null,
+  submited: false,
 };
 const getters = {
   questions(state) {
@@ -34,6 +32,15 @@ const getters = {
   },
   question(state) {
     return state.question;
+  },
+  result(state) {
+    return state.result;
+  },
+  records(state) {
+    return state.records;
+  },
+  recordsLight(state) {
+    return state.recordsLight;
   },
 };
 const actions = {
@@ -54,8 +61,11 @@ const actions = {
     commit("beforeQuestion");
     commit("question");
   },
-  check({ commit }, i) {
-    commit("check", i);
+  submitQuestion({ commit }, record) {
+    commit("submitQuestion", record);
+  },
+  finalCheck({ commit }) {
+    commit("finalCheck");
   },
 };
 const mutations = {
@@ -68,28 +78,44 @@ const mutations = {
     state.start = true;
   },
   question(state) {
-    let result = `${state.questions[state.index].incorrect_answers},${
-      state.questions[state.index].correct_answer
-    }`;
-    let answers = result.split(",");
+    let res = [
+      ...state.questions[state.index].incorrect_answers,
+      state.questions[state.index].correct_answer,
+    ];
+    let answers = _.shuffle(res);
     state.question = {
       questionText: state.questions[state.index].question,
-      answers: _.shuffle(answers),
+      answers: answers,
       trueAnswer: answers.indexOf(state.questions[state.index].correct_answer),
       category: state.questions[state.index].category,
       type: state.questions[state.index].type,
       difficulty: state.questions[state.index].difficulty,
     };
+    state.recordsLight.push(state.question);
   },
   nextQuestion(state) {
     state.index++;
+    state.submited = false;
   },
   beforeQuestion(state) {
     state.index--;
+    state.submited = false;
   },
-  check(state, i) {
-    state;
-    console.log(i);
+  submitQuestion(state, record) {
+    state.submited = true;
+    state.records.push(record);
+  },
+  finalCheck(state) {
+    state.records.map((question) => {
+      if (question.selectedIndex === state.question.trueAnswer) {
+        state.result.correctAnswers++;
+      } else if (question.selectedIndex === null) {
+        // state.result.noAnswers++;
+      } else {
+        state.result.incorroctAnswers++;
+      }
+    });
+    state.finish = true;
   },
 };
 export default {

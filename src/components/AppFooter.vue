@@ -1,7 +1,8 @@
 <template>
-  <div class="footer p-5 bg-primary">
+  <div class="footer p-5 bg-primary text-dark text-center">
     <div>
-      <b-navbar toggleable="lg" type="dark" variant="primary"> </b-navbar>
+      This Appliction use
+      <a href="https://http://opentdb.com/" class="text-white">opentdb</a> api.
     </div>
   </div>
 </template>

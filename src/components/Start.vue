@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div>
+    <div class="text-center">
       <b-jumbotron header="Quiz" lead="A Quiz Web Application">
         <div>
           <b-form>
@@ -18,14 +18,17 @@
                 required
               ></b-form-input>
             </b-form-group>
+            <div>
+              <b-button
+                block
+                variant="primary"
+                class="btn-lg text-dark"
+                @click="getQuestions(questionInfo)"
+                >Go</b-button
+              >
+            </div>
           </b-form>
         </div>
-        <b-button
-          variant="primary"
-          class="btn-lg"
-          @click="getQuestions(questionInfo)"
-          >Go</b-button
-        >
       </b-jumbotron>
     </div>
   </div>

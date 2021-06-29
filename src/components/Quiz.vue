@@ -17,8 +17,8 @@
           <b-list-group-item
             button
             class="text-dark"
-            @click="how(i)"
-            :variant="i === g ? 'primary' : ''"
+            @click="selectIndex(i)"
+            :variant="i === selectedIndex ? 'primary' : ''"
           >
             {{ i + 1 }}.{{ answer }}
           </b-list-group-item>
@@ -30,7 +30,7 @@
           <b-button
             variant="warning"
             class="text-dark"
-            @click="beforeQuestion()"
+            @click="before()"
             :disabled="index <= 0"
             >before</b-button
           >
@@ -38,14 +38,21 @@
           <b-button
             variant="primary"
             class="text-dark"
-            @click="nextQuestion()"
+            @click="next()"
             :disabled="index + 1 >= count"
             >next</b-button
           >
         </b-button-group>
       </div>
       <div>
-        <b-button block variant="dark">Finish quiz</b-button>
+        <b-button block variant="success" @click="submit()" :disabled="submited"
+          >Submit</b-button
+        >
+      </div>
+      <div>
+        <b-button block variant="dark" @click="finalCheck()"
+          >Finish quiz</b-button
+        >
       </div>
       <b-list-group>
         <b-list-group-item>
@@ -67,17 +74,30 @@ import { mapGetters, mapActions } from "vuex";
 export default {
   name: "Quiz",
   data() {
-    return { g: null };
+    return { selectedIndex: null };
   },
   methods: {
-    ...mapActions(["getQuestions", "beforeQuestion", "nextQuestion", "check"]),
-    how(i) {
-      // check(i)
-      this.$store.dispatch("check", {
+    ...mapActions([
+      "getQuestions",
+      "beforeQuestion",
+      "nextQuestion",
+      "finalCheck",
+      "submitQuestion",
+    ]),
+    selectIndex(i) {
+      this.selectedIndex = i;
+    },
+    before() {
+      this.beforeQuestion();
+    },
+    next() {
+      this.nextQuestion();
+    },
+    submit() {
+      this.$store.dispatch("submitQuestion", {
         question: this.index + 1,
-        selectedIndex: i,
+        selectedIndex: this.selectedIndex,
       });
-      this.g = i;
     },
   },
   computed: {
@@ -87,6 +107,17 @@ export default {
     },
     count() {
       return this.$store.state.quiz.count;
+    },
+    submited() {
+      return this.$store.state.quiz.submited;
+    },
+  },
+  watch: {
+    question: {
+      immediate: true,
+      handler() {
+        this.selectedIndex = null;
+      },
     },
   },
 };
